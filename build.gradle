@@ -15,8 +15,13 @@ java {
 }
 
 dependencies {
-    implementation 'org.hibernate.orm:hibernate-core:6.2.6.Final'
+    implementation 'org.hibernate:hibernate-core:5.5.6.Final'
     runtimeOnly 'org.postgresql:postgresql:42.6.0'
+    implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.12.1'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.32'
+
+
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
 

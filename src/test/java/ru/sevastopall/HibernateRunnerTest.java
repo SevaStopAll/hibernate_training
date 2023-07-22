@@ -1,13 +1,16 @@
 package ru.sevastopall;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
 import org.junit.jupiter.api.Test;
 import ru.sevastopall.entity.User;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -15,14 +18,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkGetReflectionApi() throws SQLException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.getString("firstname");
+        resultSet.getString("lastname");
+
+        Class<User> userClass = User.class;
+
+        Constructor<User> userClassConstructor = userClass.getConstructor();
+        User user = userClassConstructor.newInstance();
+        Field usernameField = userClass.getDeclaredField("username");
+        usernameField.setAccessible(true);
+        usernameField.set(user, resultSet.getString("username"));
+
+
+    }
     @Test
     void checkReflectionApi() throws SQLException, IllegalAccessException {
         User user = User.builder()
-                .username("Ivan@gmail.com")
-                .firstName("Ivan")
-                .lastName("Ivanov")
-                .birthDate(LocalDate.of(2000, 1, 19))
-                .age(20)
                 .build();
 
         String sql = """
@@ -56,6 +72,7 @@ class HibernateRunnerTest {
             declaredField.setAccessible(true);
             preparedStatement.setObject(1, declaredField.get(user));
         }
+
     }
 
 }

@@ -1,15 +1,13 @@
 package ru.sevastopall.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import ru.sevastopall.converter.BirthdayConverter;
 
-import java.time.LocalDate;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -20,10 +18,20 @@ import java.time.LocalDate;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
     private String username;
-    private String firstName;
-    private String lastName;
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
-    private Integer age;
+
+    @Embedded
+    @AttributeOverride(name="birthDate", column= @Column(name = "birth_date"))
+    private PersonalInfo personalInfo;
+
+
+    @Type(type = "jsonb")
+    private String info;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
