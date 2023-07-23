@@ -13,6 +13,7 @@ public class HibernateUtil {
         Configuration configuration = new Configuration();
         /*configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());*/
         /*configuration.addAnnotatedClass(User.class);*/
+        /*configuration.addAnnotatedClass(Company.class);*/
         configuration.addAttributeConverter(new BirthdayConverter(), true);
         configuration.registerTypeOverride(new JsonBinaryType());
         configuration.configure();

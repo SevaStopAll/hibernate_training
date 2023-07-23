@@ -1,7 +1,13 @@
 package ru.sevastopall;
 
+import lombok.Cleanup;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
+import ru.sevastopall.entity.Company;
 import ru.sevastopall.entity.User;
+import ru.sevastopall.util.HibernateUtil;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -12,12 +18,87 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkOrphanRemoval() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+            Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Company company = session.getReference(Company.class, 1);
+            company.getUsers().removeIf(user -> user.getId().equals(2L));
+
+            session.getTransaction().commit();
+        }
+    }
+    @Test
+    void checkLazyInitialisation() {
+        Company company = null;
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            company = session.get(Company.class, 1);
+
+
+            session.getTransaction().commit();
+        }
+        Set<User> users = company.getUsers();
+        System.out.println(users.size());
+    }
+
+    @Test
+    void deleteCompany() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Company company = session.get(Company.class, 3);
+        session.delete(company);
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void addUserToNewCompany() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        Company company = Company.builder()
+                .name("Facebook")
+                .build();
+
+        User user = User.builder()
+                .username("Sveta@gmail.com")
+                .build();
+
+        company.addUser(user);
+
+        session.save(company);
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void oneToMany() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        Company company = session.get(Company.class, 1);
+        System.out.println(company.getUsers());
+
+        session.getTransaction().commit();
+    }
 
     @Test
     void checkGetReflectionApi() throws SQLException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
