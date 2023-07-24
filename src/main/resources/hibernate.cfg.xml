@@ -13,5 +13,7 @@
       <property name="format_sql">true</property>
       <mapping class="ru.sevastopall.entity.User"/>
       <mapping class="ru.sevastopall.entity.Company"/>
+    <mapping class="ru.sevastopall.entity.Profile"/>
+    <mapping class="ru.sevastopall.entity.Chat"/>
   </session-factory>
 </hibernate-configuration>

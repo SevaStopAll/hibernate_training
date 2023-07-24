@@ -5,7 +5,9 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
+import ru.sevastopall.entity.Chat;
 import ru.sevastopall.entity.Company;
+import ru.sevastopall.entity.Profile;
 import ru.sevastopall.entity.User;
 import ru.sevastopall.util.HibernateUtil;
 
@@ -24,6 +26,49 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkManyToMany() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            User user = session.get(User.class, 1L);
+            user.getChats().clear();
+           /* Chat chat = Chat.builder()
+                    .name("chat")
+                    .build();
+
+            user.addChat(chat);
+            session.save(chat);*/
+
+            session.getTransaction().commit();
+
+        }
+    }
+
+    @Test
+    void checkOneToOne() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            User user = User.builder()
+                    .username("test4@gmail.com")
+                    .company(session.get(Company.class, 1))
+                    .build();
+            Profile profile = Profile.builder()
+                    .street("Right 18")
+                    .language("RU")
+                    .build();
+
+            profile.setUser(user);
+            session.save(user);
+
+            session.getTransaction().commit();
+
+        }
+    }
 
     @Test
     void checkOrphanRemoval() {
@@ -157,3 +202,53 @@ class HibernateRunnerTest {
     }
 
 }
+
+
+/*
+    CREATE TABLE company(
+        id SERIAL PRIMARY KEY,
+        name varchar(64) NOT NULL UNIQUE
+);
+
+        CREATE TABLE users(
+        id BIGSERIAL PRIMARY KEY,
+        username varchar(128),
+        firstName varchar(128),
+        lastName varchar(128),
+        birth_date DATE,
+        role varchar(32),
+        company_id INT REFERENCES company(id) ON DELETE CASCADE,
+        info JSONB
+        );
+
+        create table profile(
+        id BIGSERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL UNIQUE REFERENCES users (id),
+        street varchar(128),
+        language CHAR(2)
+        );
+
+        CREATE TABLE chat (
+        id BIGSERIAL PRIMARY KEY,
+        name varchar(64) not null unique
+        );
+
+        CREATE TABLE users_chat(
+        user_id BIGINT references users(id),
+        chat_id BIGINT references chat(id),
+        PRIMARY KEY (user_id, chat_id)
+        )
+
+
+        create sequence users_id_seq
+        owned by users.id;
+
+        INSERT INTO users(username, firstName, lastName, company_id)
+        VALUES ('Katya@gmail.cim', 'Katya', 'Katina', 1);
+
+        INSERT INTO users(username, firstName, lastName, company_id)
+        VALUES ('Ulyana@gmail.cim', 'Ulyana', 'Markova', 1);
+
+        DROP TABLE users;
+
+        DROP TABLE profile*/

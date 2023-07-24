@@ -5,12 +5,14 @@ import org.hibernate.annotations.Type;
 import ru.sevastopall.converter.BirthdayConverter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(of = "username")
-@EqualsAndHashCode(exclude = "company")
+@EqualsAndHashCode(exclude = {"company", "profile", "chats"})
 @Builder
 @Entity
 @Table(name="users", schema = "public")
@@ -36,4 +38,19 @@ public class User {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id") // company_id (название сущности и через _ название первичного ключа)
     private Company company;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile;
+
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(name = "users_chat",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "chat_id"))
+    private Set<Chat> chats = new HashSet<>();
+
+    public void addChat(Chat chat) {
+        chats.add(chat);
+        chat.getUsers().add(this);
+    }
 }
