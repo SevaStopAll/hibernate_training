@@ -2,21 +2,22 @@ package ru.sevastopall.entity;
 
 import lombok.*;
 import org.hibernate.annotations.Type;
-import ru.sevastopall.converter.BirthdayConverter;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(of = "username")
-@EqualsAndHashCode(exclude = {"company", "profile", "chats"})
-@Builder
+@EqualsAndHashCode(exclude = {"company", "profile", "userChats" })
 @Entity
-@Table(name="users", schema = "public")
-public class User {
+@Table(name = "users", schema = "public")
+@Inheritance(strategy = InheritanceType.JOINED)
+/*@DiscriminatorColumn(name = "type")*/
+public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,22 +36,14 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id") // company_id (название сущности и через _ название первичного ключа)
     private Company company;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
 
-    @Builder.Default
-    @ManyToMany
-    @JoinTable(name = "users_chat",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "chat_id"))
-    private Set<Chat> chats = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserChat> userChats = new ArrayList<>();
 
-    public void addChat(Chat chat) {
-        chats.add(chat);
-        chat.getUsers().add(this);
-    }
 }

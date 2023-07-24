@@ -4,15 +4,14 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url"> jdbc:postgresql://localhost:5432/postgres </property>
-     <property name="connection.username">postgres</property>
-     <property name="connection.password">password</property>
     <property name="connection.driver_class">org.postgresql.Driver</property>
-    <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
     <property name="show_sql">true</property>
       <property name="format_sql">true</property>
-      <mapping class="ru.sevastopall.entity.User"/>
-      <mapping class="ru.sevastopall.entity.Company"/>
+    <property name="hbm2ddl.auto">create</property>
+
+    <mapping class="ru.sevastopall.entity.User"/>
+    <mapping class="ru.sevastopall.entity.Company"/>
     <mapping class="ru.sevastopall.entity.Profile"/>
     <mapping class="ru.sevastopall.entity.Chat"/>
     <mapping class="ru.sevastopall.entity.UserChat"/>

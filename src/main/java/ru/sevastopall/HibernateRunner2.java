@@ -17,7 +17,9 @@ public class HibernateRunner2 {
     /*private static final Logger log = LoggerFactory.getLogger(HibernateRunner.class);*/
 
     public static void main(String[] args) {
-        User user = User.builder()
+    }
+}
+/*        User user = User.builder()
                 .username("1dima@gmail.ru")
                 .personalInfo(PersonalInfo.builder()
                         .lastName("Ivanov")
@@ -42,9 +44,9 @@ public class HibernateRunner2 {
 
             try (Session session2 = sessionFactory.openSession()) {
                 session2.beginTransaction();
-                /*session2.delete(user);*/
+                *//*session2.delete(user);*//*
 
-                /*                session2.merge(user);*/
+                *//*                session2.merge(user);*//*
                 session2.getTransaction().commit();
             }
         }
@@ -52,5 +54,5 @@ public class HibernateRunner2 {
             log.error("Exception occured", exception);
             throw exception;
         }
-    }
-}
+    }*/
+

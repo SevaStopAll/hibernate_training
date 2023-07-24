@@ -1,14 +1,11 @@
 package ru.sevastopall;
 
 import lombok.Cleanup;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
-import ru.sevastopall.entity.Chat;
-import ru.sevastopall.entity.Company;
-import ru.sevastopall.entity.Profile;
-import ru.sevastopall.entity.User;
+import ru.sevastopall.entity.*;
+import ru.sevastopall.util.HibernateTestUtil;
 import ru.sevastopall.util.HibernateUtil;
 
 import javax.persistence.Column;
@@ -20,21 +17,99 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 class HibernateRunnerTest {
 
     @Test
+    void checkH2() {
+        try (SessionFactory sessionFactory = HibernateTestUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Company company = Company.builder()
+                    .name("Google")
+                    .build();
+
+            session.save(company);
+
+            Programmer programmer = Programmer.builder()
+                    .username("ivanov@yandex.ru")
+                    .language(Language.JAVA)
+                    .company(company)
+                    .build();
+            session.save(programmer);
+
+            Manager manager1 = Manager.builder()
+                    .username("svaaa@rambler.com")
+                    .projectName("Starter")
+                    .company(company)
+                    .build();
+
+            session.save(manager1);
+
+
+            Programmer programmer1 = Programmer.builder()
+                    .username("petriv@yandex.ru")
+                    .language(Language.RUBY)
+                    .company(company)
+                    .build();
+            session.save(programmer1);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Test
+    void orderingTest() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Company company = session.get(Company.class, 1);
+            company.getUsers().forEach((k, v) -> System.out.println(v));
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Test
+    void localInfo() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Company company = session.get(Company.class, 1);
+           /* company.getLocales().add(LocaleInfo.of("ru", "Описание на русском"));
+            company.getLocales().add(LocaleInfo.of("en", "Description in English"));
+*/
+            session.getTransaction().commit();
+        }
+
+    }
+
+    @Test
     void checkManyToMany() {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
-        Session session = sessionFactory.openSession()) {
+             Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
             User user = session.get(User.class, 1L);
-            user.getChats().clear();
+            Chat chat = session.get(Chat.class, 1L);
+
+            /*UserChat usersChat = UserChat.builder()
+                    .createdAt(Instant.now())
+                    .createdBy(user.getUsername())
+                    .build();
+
+            usersChat.setUser(user);
+            usersChat.setChat(chat);
+
+            session.save(usersChat);*/
+
+            /*user.getChats().clear();*/
            /* Chat chat = Chat.builder()
                     .name("chat")
                     .build();
@@ -53,7 +128,7 @@ class HibernateRunnerTest {
              Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            User user = User.builder()
+           /* User user = User.builder()
                     .username("test4@gmail.com")
                     .company(session.get(Company.class, 1))
                     .build();
@@ -63,7 +138,7 @@ class HibernateRunnerTest {
                     .build();
 
             profile.setUser(user);
-            session.save(user);
+            session.save(user);*/
 
             session.getTransaction().commit();
 
@@ -73,15 +148,16 @@ class HibernateRunnerTest {
     @Test
     void checkOrphanRemoval() {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
-            Session session = sessionFactory.openSession()) {
+             Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
             Company company = session.getReference(Company.class, 1);
-            company.getUsers().removeIf(user -> user.getId().equals(2L));
+            /*company.getUsers().removeIf(user -> user.getId().equals(2L));*/
 
             session.getTransaction().commit();
         }
     }
+
     @Test
     void checkLazyInitialisation() {
         Company company = null;
@@ -94,8 +170,8 @@ class HibernateRunnerTest {
 
             session.getTransaction().commit();
         }
-        Set<User> users = company.getUsers();
-        System.out.println(users.size());
+        /*Set<User> users = company.getUsers();*/
+        /*System.out.println(users.size());*/
     }
 
     @Test
@@ -121,11 +197,11 @@ class HibernateRunnerTest {
                 .name("Facebook")
                 .build();
 
-        User user = User.builder()
+      /*  User user = User.builder()
                 .username("Sveta@gmail.com")
                 .build();
 
-        company.addUser(user);
+        company.addUser(user);*/
 
         session.save(company);
 
@@ -162,7 +238,8 @@ class HibernateRunnerTest {
 
 
     }
-    @Test
+}
+    /*@Test
     void checkReflectionApi() throws SQLException, IllegalAccessException {
         User user = User.builder()
                 .build();
@@ -201,7 +278,7 @@ class HibernateRunnerTest {
 
     }
 
-}
+}*/
 
 
 /*

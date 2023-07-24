@@ -15,5 +15,8 @@
       <mapping class="ru.sevastopall.entity.Company"/>
     <mapping class="ru.sevastopall.entity.Profile"/>
     <mapping class="ru.sevastopall.entity.Chat"/>
+    <mapping class="ru.sevastopall.entity.UserChat"/>
+    <mapping class="ru.sevastopall.entity.Programmer"/>
+    <mapping class="ru.sevastopall.entity.Manager"/>
   </session-factory>
 </hibernate-configuration>

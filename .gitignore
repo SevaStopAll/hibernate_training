@@ -1,0 +1,10 @@
+*.iml
+target
+build
+.gradle
+gradle
+.idea
+.db
+.class
+.bin
+/.gradle/

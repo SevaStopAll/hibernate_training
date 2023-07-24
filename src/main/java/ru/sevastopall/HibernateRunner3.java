@@ -18,7 +18,7 @@ public class HibernateRunner3 {
         Company google = Company.builder()
                 .name("Google")
                 .build();
-        User user = User.builder()
+        /*User user = User.builder()
                 .username("1dima@gmail.ru")
                 .personalInfo(PersonalInfo.builder()
                         .lastName("Ivanov")
@@ -26,7 +26,7 @@ public class HibernateRunner3 {
                         .birthDate(new Birthday(LocalDate.of(1999, 12, 12)))
                         .build())
                 .company(google)
-                .build();
+                .build();*/
 
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
             Session session1 = sessionFactory.openSession();
