@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@NamedQuery(name="findUserByName", query = "select u from User u " +
+        "left join u.company c " +
+        "where u.personalInfo.firstName = :firstname and c.name = :companyName " +
+        "order by u.personalInfo.lastName desc")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

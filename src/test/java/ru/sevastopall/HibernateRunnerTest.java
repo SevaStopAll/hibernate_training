@@ -3,6 +3,7 @@ package ru.sevastopall;
 import lombok.Cleanup;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.junit.jupiter.api.Test;
 import ru.sevastopall.entity.*;
 import ru.sevastopall.util.HibernateTestUtil;
@@ -17,12 +18,29 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.List;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkHQL() {
+        try(SessionFactory sessionFactory = HibernateTestUtil.buildSessionFactory();
+            Session session = sessionFactory.openSession()) {
+                session.beginTransaction();
+
+                //SELECT u.* from users u where u.firstname= 'Ivan';
+            List<User> list = session.createQuery(
+                    "select u from User u " +
+                            "left join u.company c " +
+                            "where u.personalInfo.firstName = :firstname and c.name = :companyName " +
+                            "order by u.personalInfo.lastName desc", User.class)
+                    .setParameter("firstname", "Ivan")
+                    .setParameter("companyName", "Google")
+                    .list();
+            session.getTransaction().commit();
+        }
+    }
+
 
     @Test
     void checkH2() {
