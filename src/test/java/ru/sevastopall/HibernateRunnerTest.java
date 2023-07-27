@@ -22,6 +22,7 @@ import java.util.List;
 
 class HibernateRunnerTest {
 
+
     @Test
     void checkHQL() {
         try(SessionFactory sessionFactory = HibernateTestUtil.buildSessionFactory();

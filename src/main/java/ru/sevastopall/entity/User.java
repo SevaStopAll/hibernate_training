@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString(of = "username")
 @EqualsAndHashCode(exclude = {"company", "profile", "userChats" })
+@Builder
 @Entity
 @Table(name = "users", schema = "public")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -43,6 +44,10 @@ public abstract class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id") // company_id (название сущности и через _ название первичного ключа)
     private Company company;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "receiver")
+    private List<Payment> payments = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
