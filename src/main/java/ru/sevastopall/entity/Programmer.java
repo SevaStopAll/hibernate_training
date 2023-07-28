@@ -1,3 +1,4 @@
+/*
 package ru.sevastopall.entity;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-/*@DiscriminatorValue("programmer")*/
+*/
+/*@DiscriminatorValue("programmer")*//*
+
 @PrimaryKeyJoinColumn(name = "id")
 public class Programmer extends User {
 
@@ -26,3 +29,4 @@ public class Programmer extends User {
         this.language = language;
     }
 }
+*/

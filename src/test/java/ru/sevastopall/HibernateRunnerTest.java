@@ -43,7 +43,7 @@ class HibernateRunnerTest {
     }
 
 
-    @Test
+    /*@Test
     void checkH2() {
         try (SessionFactory sessionFactory = HibernateTestUtil.buildSessionFactory();
              Session session = sessionFactory.openSession()) {
@@ -79,7 +79,7 @@ class HibernateRunnerTest {
 
             session.getTransaction().commit();
         }
-    }
+    }*/
 
     @Test
     void orderingTest() {

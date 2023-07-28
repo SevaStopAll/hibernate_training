@@ -77,7 +77,7 @@ public class TestDataImporter {
     private static Payment savePayment(Session session, User user, int amount) {
         Payment payment = Payment.builder()
                 .amount(amount)
-                .reciever(user)
+                .receiver(user)
                 .build();
 
         session.save(payment);

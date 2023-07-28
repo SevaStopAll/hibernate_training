@@ -13,7 +13,9 @@ import ru.sevastopall.util.TestDataImporter;
 
 import java.util.List;
 
-import static org.junit.Assert.assertThat;
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserDaoTest {
@@ -36,6 +38,34 @@ public class UserDaoTest {
         session.beginTransaction();
 
         List<User> results = userDao.findAll(session);
-        assertThat(results).hasSize(5);
+        assertEquals(5, results.size());
+    }
+
+    @Test
+    void findAllByFirstName() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        List<User> results = userDao.findAllByFirstName(session, "Bill");
+
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).fullName()).isEqualTo("Bill Gates");
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void findLimitedUsersOrderedByBirthday() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        int limit = 3;
+        List<User> results = userDao.findLimitedUsersOrderedByBirthday(session, limit);
+        assertThat(results).hasSize(limit);
+
+        List<String> fullNames = results.stream().map(User::fullName).collect(toList());
+        assertThat(fullNames).contains("Diane Greene", "Steve Jobs", "Bill Gates");
+
+        session.getTransaction().commit();
     }
 }

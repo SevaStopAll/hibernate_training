@@ -23,5 +23,5 @@ public class Payment {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "receiver_id")
-    private User reciever;
+    private User receiver;
 }

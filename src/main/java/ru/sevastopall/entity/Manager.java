@@ -1,3 +1,4 @@
+/*
 package ru.sevastopall.entity;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-/*@DiscriminatorValue("manager")*/
+*/
+/*@DiscriminatorValue("manager")*//*
+
 @PrimaryKeyJoinColumn(name = "id")
 public class Manager extends User {
 
@@ -26,3 +29,4 @@ public class Manager extends User {
         this.projectName = projectName;
     }
 }
+*/

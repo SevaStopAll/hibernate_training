@@ -1,58 +1,99 @@
 package ru.sevastopall.entity;
 
-import lombok.*;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.sevastopall.entity.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 
-@NamedQuery(name="findUserByName", query = "select u from User u " +
-        "left join u.company c " +
-        "where u.personalInfo.firstName = :firstname and c.name = :companyName " +
-        "order by u.personalInfo.lastName desc")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(of = "username")
-@EqualsAndHashCode(exclude = {"company", "profile", "userChats" })
+@EqualsAndHashCode(of = "username")
+@ToString(exclude = {"company", "profile", "userChats", "payments"})
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
-@Inheritance(strategy = InheritanceType.JOINED)
-/*@DiscriminatorColumn(name = "type")*/
-public abstract class User {
+@TypeDef(name = "dmdev", typeClass = JsonBinaryType.class)
+public class User implements Comparable<User>, BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @AttributeOverride(name = "birthDate", column = @Column(name = "birth_date"))
+    private PersonalInfo personalInfo;
+
     @Column(unique = true)
     private String username;
 
-    @Embedded
-    @AttributeOverride(name="birthDate", column= @Column(name = "birth_date"))
-    private PersonalInfo personalInfo;
-
-    @Type(type = "jsonb")
+    @Type(type = "dmdev")
     private String info;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id") // company_id (название сущности и через _ название первичного ключа)
+    @JoinColumn(name = "company_id") // company_id
     private Company company;
+
+    @OneToOne(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Profile profile;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<UserChat> userChats = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "receiver")
     private List<Payment> payments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Profile profile;
+    @Override
+    public int compareTo(User o) {
+        return username.compareTo(o.username);
+    }
 
-    @OneToMany(mappedBy = "user")
-    private List<UserChat> userChats = new ArrayList<>();
-
+    public String fullName() {
+        return getPersonalInfo().getFirstName() + " " + getPersonalInfo().getLastName();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
