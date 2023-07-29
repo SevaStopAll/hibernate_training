@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import ru.sevastopall.entity.BaseEntity;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
@@ -85,6 +84,16 @@ public class User implements Comparable<User>, BaseEntity<Long> {
         return getPersonalInfo().getFirstName() + " " + getPersonalInfo().getLastName();
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
