@@ -1,6 +1,7 @@
 package ru.sevastopall.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import ru.sevastopall.listener.UserChatListener;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.time.Instant;
 @Builder
 @Table(name="users_chat")
 @EntityListeners(UserChatListener.class)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserChat extends AuditableEntity<Long>{
 
     @Id

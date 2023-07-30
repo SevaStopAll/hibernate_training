@@ -11,6 +11,7 @@ import ru.sevastopall.dto.PaymentFilter;
 import ru.sevastopall.entity.*;
 
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static ru.sevastopall.entity.QCompany.*;

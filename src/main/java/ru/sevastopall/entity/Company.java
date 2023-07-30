@@ -2,6 +2,10 @@ package ru.sevastopall.entity;
 
 import lombok.*;
 import org.checkerframework.checker.units.qual.C;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.*;
@@ -14,6 +18,8 @@ import java.util.*;
 @Builder
 @Table(name = "company")
 @Entity
+@Audited
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Companies")
 public class Company {
 
     @Id
@@ -28,6 +34,7 @@ public class Company {
     /*@org.hibernate.annotations.OrderBy(clause = "username DESC, lastname ASC")*/
     /*@OrderBy(value="username DESC, personalInfo.lastName ASC")*/
     @MapKey(name = "username")
+    @NotAudited
     private Map<String, User> users = new HashMap<>();
 
     @Builder.Default
@@ -36,6 +43,7 @@ public class Company {
 /*    @AttributeOverride(name="lang", column = @Column(name = "language"))*/
     @Column(name="description")
     @MapKeyColumn(name="lang")
+    @NotAudited
     private Map<String, String> locales = new HashMap<>();
 
     public void addUser(User user) {

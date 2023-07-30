@@ -85,21 +85,25 @@ public class TestDataImporter {
         return company;
     }
 
-    private static User saveUser(Session session, String firstName, String lastName, LocalDate birthDate, Company company) {
+    private static User saveUser(Session session,
+                          String firstName,
+                          String lastName,
+                          LocalDate birthday,
+                          Company company) {
         User user = User.builder()
-                .company(company)
                 .username(firstName + lastName)
                 .personalInfo(PersonalInfo.builder()
                         .firstName(firstName)
                         .lastName(lastName)
-                        .birthDate(new Birthday(birthDate))
+                        .birthDate(birthday)
                         .build())
+                .company(company)
                 .build();
-
         session.save(user);
 
         return user;
     }
+
 
     private static Payment savePayment(Session session, User user, int amount) {
         Payment payment = Payment.builder()

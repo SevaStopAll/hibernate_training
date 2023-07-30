@@ -2,6 +2,7 @@ package ru.sevastopall.entity;
 
 import lombok.*;
 import org.checkerframework.checker.units.qual.N;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -10,6 +10,7 @@ import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
 import ru.sevastopall.converter.BirthdayConverter;
 import ru.sevastopall.entity.Audit;
+import ru.sevastopall.entity.Revision;
 import ru.sevastopall.interceptor.GlobalInterceptor;
 import ru.sevastopall.listener.AuditTableListener;
 
@@ -23,7 +24,7 @@ public class HibernateUtil {
         configuration.configure();
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
-        registerListeners(sessionFactory);
+      /*  registerListeners(sessionFactory);*/
 
         return sessionFactory;
     }
@@ -39,11 +40,12 @@ public class HibernateUtil {
         Configuration configuration = new Configuration();
         configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
         configuration.addAnnotatedClass(Audit.class);
+        configuration.addAnnotatedClass(Revision.class);
         /*configuration.addAnnotatedClass(User.class);*/
         /*configuration.addAnnotatedClass(Company.class);*/
         configuration.addAttributeConverter(new BirthdayConverter(), true);
         configuration.registerTypeOverride(new JsonBinaryType());
-        configuration.setInterceptor(new GlobalInterceptor());
+        /*configuration.setInterceptor(new GlobalInterceptor());*/
         return configuration;
     }
 }

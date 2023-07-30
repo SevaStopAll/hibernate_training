@@ -8,6 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -44,6 +47,8 @@ attributeNodes = {
 @Entity
 @Table(name = "users", schema = "public")
 @TypeDef(name = "dmdev", typeClass = JsonBinaryType.class)
+@Audited
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Users")
 public class User implements Comparable<User>, BaseEntity<Long> {
 
     @Id
@@ -75,9 +80,12 @@ public class User implements Comparable<User>, BaseEntity<Long> {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @NotAudited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserChat> userChats = new HashSet<>();
 
     @Builder.Default
+    @NotAudited
     /*@BatchSize(size = 3)*/
     /*@Fetch(FetchMode.SUBSELECT)*/
     @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
