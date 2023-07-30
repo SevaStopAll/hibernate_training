@@ -1,19 +1,19 @@
 package ru.sevastopall.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import ru.sevastopall.listener.UserChatListener;
 
 import javax.persistence.*;
 import java.time.Instant;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
 @Table(name="users_chat")
+@EntityListeners(UserChatListener.class)
 public class UserChat extends AuditableEntity<Long>{
 
     @Id

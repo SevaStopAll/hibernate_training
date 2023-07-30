@@ -1,4 +1,4 @@
-package ru.sevastopall.util;
+package ru.sevastopall;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,6 +8,7 @@ import org.hibernate.graph.RootGraph;
 import org.hibernate.graph.SubGraph;
 import ru.sevastopall.entity.User;
 import ru.sevastopall.entity.UserChat;
+import ru.sevastopall.util.HibernateUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -34,18 +35,17 @@ public class HibernateRunnerH1 {
                     /*GraphSemantic.LOAD.getJpaHintName(), withCompanyAndChat*/
                     GraphSemantic.LOAD.getJpaHintName(), entityGraph
             );
-            /*User user = session.find(User.class, 1L, properties);
+            User user = session.find(User.class, 1L, properties);
             System.out.println(user.getCompany().getName());
-            System.out.println(user.getUserChats().size());*/
-
+            System.out.println(user.getUserChats().size());
 
 
             List<User> users = session.createQuery(
                     "select u from User u join fetch u.payments join fetch u.company", User.class)
                     .setHint(GraphSemantic.LOAD.getJpaHintName(), entityGraph)
                     .list();
-            users.forEach(user -> System.out.println(user.getUserChats().size()));
-            users.forEach(user -> System.out.println(user.getCompany().getName()));
+            users.forEach(usr-> System.out.println(usr.getUserChats().size()));
+            users.forEach(usr -> System.out.println(usr.getCompany().getName()));
 
             session.getTransaction().commit();
         }
