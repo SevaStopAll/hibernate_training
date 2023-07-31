@@ -16,11 +16,19 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+@NamedEntityGraph(name = "WithCompany",
+        attributeNodes = {
+                @NamedAttributeNode("company")
+        }
+)
 /*@NamedEntityGraph(name = "WithCompanyAndChat",
 attributeNodes = {
         @NamedAttributeNode("company"),
@@ -55,9 +63,11 @@ public class User implements Comparable<User>, BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Valid
     @AttributeOverride(name = "birthDate", column = @Column(name = "birth_date"))
     private PersonalInfo personalInfo;
 
+    @NotNull
     @Column(unique = true)
     private String username;
 
